@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ko" class="home">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#030815">
+  <meta name="description" content="YAOM OFFICIAL — 야옴 방송 일정 · 노래책 · 공지 · 옷장">
+  <meta property="og:title" content="야옴 YAOM — NIGHT DIAGONAL">
+  <meta property="og:description" content="아무래도 아무래도 — YAOM OFFICIAL">
+  <meta property="og:type" content="website">
+  <title>야옴 YAOM — Night Diagonal</title>
+  <link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/ya/yaom0728/yaom0728.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    /* FOUC 게이트 (§9.5) */
+    body.home{opacity:0;transition:opacity .35s ease}
+    body.home.ready{opacity:1}
+  </style>
+</head>
+<body class="home">
+<script>try{if(localStorage.getItem('yaom-mode')==='day')document.body.classList.add('day');}catch(e){}</script>
+
+<main class="page-shell">
+  <section class="concept concept-12" id="top">
+    <div class="diagonal-photo" aria-hidden="true"></div>
+
+    <header class="main-header">
+      <a class="wordmark" href="./" aria-label="야옴 메인">
+        <b>야옴</b>
+        <span>YAOM</span>
+      </a>
+
+      <nav aria-label="메인 메뉴">
+        <a href="./profile/">PROFILE</a>
+        <a href="./schedule/">SCHEDULE</a>
+        <a href="./song/">SETLIST</a>
+        <a href="./notice/">NOTICE</a>
+        <a href="./dress/">WARDROBE</a>
+      </nav>
+
+      <p class="edition">
+        <span class="ed-t">NIGHT DIAGONAL</span>
+        <button class="hbtn" type="button" data-mode>☾ NIGHT</button>
+        <button class="hbtn" type="button" data-ask>✉ SIGNAL</button>
+      </p>
+    </header>
+
+    <div class="diagonal-copy" id="about">
+      <p data-hook="main-kicker">NIGHT CREATOR</p>
+      <h1 data-hook="info-name">야옴</h1>
+      <b data-hook="info-en">YAOM</b>
+      <span data-hook="main-tagline">아무래도 아무래도 · GAME · TALK · SONG</span>
+
+      <div class="socials" aria-label="소셜 링크">
+        <a href="https://www.sooplive.com/station/yaom0728" target="_blank" rel="noopener" id="lk-soop">SOOP ↗</a>
+        <a href="https://www.youtube.com/@yaom_0728" target="_blank" rel="noopener" id="lk-youtube">YOUTUBE ↗</a>
+        <a href="https://cafe.naver.com/vbbd" target="_blank" rel="noopener" id="lk-cafe">CAFE ↗</a>
+        <button type="button" data-ask>SIGNAL ↗</button>
+      </div>
+    </div>
+
+    <div class="diagonal-days" id="schedule" aria-label="주간 일정">
+      <div id="day-0"><i>01</i><span>MON</span><b>LIVE</b></div>
+      <div id="day-1"><i>02</i><span>TUE</span><b>LIVE</b></div>
+      <div id="day-2"><i>03</i><span>WED</span><b>LIVE</b></div>
+      <div id="day-3"><i>04</i><span>THU</span><b>LIVE</b></div>
+      <div id="day-4"><i>05</i><span>FRI</span><b>LIVE</b></div>
+      <div id="day-5"><i>06</i><span>SAT</span><b>LIVE</b></div>
+      <div id="day-6" class="off"><i>07</i><span>SUN</span><b>OFF</b></div>
+    </div>
+
+    <aside class="diagonal-note" id="archive">
+      <span>ON AIR</span>
+      <b data-hook="on-air">MON–SAT / 20:00</b>
+      <p><span data-hook="on-air-note">SOOP LIVE CHANNEL</span> · BIRTHDAY <span data-dday>D-</span></p>
+    </aside>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="./supabase.js"></script>
+<script>
+/* ── 메인 DB 로더 (§2-B.2) ── */
+(async function(){
+  try{
+    const p = await loadProfile();
+    // 텍스트 훅
+    document.querySelectorAll('[data-hook]').forEach(function(el){
+      const v = p[el.dataset.hook];
+      if(typeof v === 'string' && v.trim()) el.textContent = v.trim();
+    });
+    // 링크
+    const links = { 'lk-soop':'link-soop', 'lk-youtube':'link-youtube', 'lk-cafe':'link-cafe' };
+    Object.keys(links).forEach(function(id){
+      const a = document.getElementById(id), v = p[links[id]];
+      if(a && typeof v === 'string' && v.trim()) a.href = v.trim();
+    });
+    // 방송 요일 (admin 체크값 0=월 … 6=일)
+    if(typeof p.days === 'string' && p.days.trim()){
+      const on = p.days.split(',').map(function(s){ return s.trim(); });
+      for(let i=0;i<7;i++){
+        const box = document.getElementById('day-'+i); if(!box) continue;
+        const live = on.includes(String(i));
+        box.classList.toggle('off', !live);
+        box.querySelector('b').textContent = live ? 'LIVE' : 'OFF';
+      }
+    }
+    // 생일 D-Day (admin 값이 있으면 그걸로 재계산 · MM.DD / MM-DD 둘 다 허용)
+    if(typeof p['info-birth'] === 'string' && /\d{1,2}[.\-/]\d{1,2}/.test(p['info-birth'])){
+      const m = p['info-birth'].match(/(\d{1,2})[.\-/](\d{1,2})/);
+      if(m && window.FX) FX.paintDday(m[1].padStart(2,'0')+'-'+m[2].padStart(2,'0'));
+    }
+  }catch(e){ console.error('메인 로더:', e); }
+  finally{ document.body.classList.add('ready'); }
+})();
+</script>
+<script src="./fx.js"></script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#030815">
+  <title>야옴 YAOM · 방송 일정</title>
+  <link rel="icon" type="image/jpeg" href="https://profile.img.sooplive.co.kr/LOGO/ya/yaom0728/yaom0728.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .cal-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}
+    .cal-title{font-family:Arial,sans-serif;font-size:19px;font-weight:900;letter-spacing:.06em;color:var(--text)}
+    .cal-title em{font-style:normal;color:var(--cyan);font-size:12px;letter-spacing:.2em;margin-left:8px}
+    .cal-nav{width:36px;height:36px;border:1px solid var(--line);background:rgba(var(--line-c),.07);color:var(--tx2);font-size:14px;cursor:pointer;transition:.2s}
+    .cal-nav:hover{color:var(--text);border-color:var(--cyan)}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);border-left:1px solid var(--line);border-top:1px solid var(--line)}
+    .dow{padding:9px 4px;text-align:center;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(var(--line-c),.08);color:var(--cyan);font-family:Arial,sans-serif;font-size:9.5px;font-weight:900;letter-spacing:.16em}
+    .dow:first-child{color:#ff8095}.dow:last-child{color:#8fd6ff}
+    .cell{position:relative;min-height:92px;padding:6px 6px 8px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden}
+    .cell.other{opacity:.28}
+    .cell.has{cursor:pointer;transition:background .2s}
+    .cell.has:hover{background:rgba(var(--line-c),.09)}
+    .cell.today{background:rgba(34,217,255,.09)}
+    .cell.today .dt{color:var(--night);background:var(--cyan);padding:1px 6px;font-weight:900}
+    .cell.hl{box-shadow:inset 0 0 0 1px var(--cyan)}
+    .dt{display:inline-block;color:var(--tx2);font-family:Arial,sans-serif;font-size:11px;font-weight:900;letter-spacing:.06em}
+    .cell:nth-child(7n+1) .dt{color:#ff8095}
+    .cell:nth-child(7n) .dt{color:#8fd6ff}
+    .cell.today .dt{color:var(--night)}
+    .ev{margin-top:4px;padding:3px 6px;font-size:10px;font-weight:700;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:2px solid currentColor;background:rgba(var(--line-c),.08)}
+    .c-green{color:#5be2b0}.c-pink{color:#ff9ec4}.c-yellow{color:#ffd76b}.c-orange{color:#ffab6b}
+    .c-blue{color:#77c2ff}.c-purple{color:#c3a6ff}.c-red{color:#ff8a8a}.c-gray{color:#9fb2c8}
+    body.day .dow:first-child{color:#c2185b}body.day .dow:last-child{color:#1565a8}
+    body.day .cell:nth-child(7n+1) .dt{color:#c2185b}body.day .cell:nth-child(7n) .dt{color:#1565a8}
+    body.day .cell.today .dt{color:#fff}
+    body.day .c-green{color:#0f8a5f}body.day .c-pink{color:#c44b7d}body.day .c-yellow{color:#9a7300}
+    body.day .c-orange{color:#b45a12}body.day .c-blue{color:#1f6fb0}body.day .c-purple{color:#6b46b0}
+    body.day .c-red{color:#c33}body.day .c-gray{color:#5a6b80}
+
+    .up{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--line);border-left:2px solid currentColor;background:rgba(var(--line-c),.05);margin-bottom:9px;cursor:pointer;transition:.2s}
+    .up:hover{background:rgba(var(--line-c),.12)}
+    .up .d{flex:0 0 86px;font-family:Arial,sans-serif;font-size:12px;font-weight:900;letter-spacing:.08em;color:currentColor}
+    .up .i{flex:1;min-width:0}
+    .up .i .t{color:var(--text);font-size:14px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .up .i .s{margin-top:3px;color:var(--tx3);font-size:11.5px;font-weight:600}
+    .up .b{flex:0 0 auto;padding:4px 10px;border:1px solid currentColor;font-family:Arial,sans-serif;font-size:9.5px;font-weight:900;letter-spacing:.13em}
+
+    #schMask{position:fixed;inset:0;z-index:80;display:none;background:rgba(2,6,14,.72);backdrop-filter:blur(6px)}
+    #schMask.on{display:block}
+    #schBox{position:fixed;z-index:90;left:50%;top:50%;transform:translate(-50%,-50%);width:min(420px,calc(100vw - 36px));max-height:82svh;overflow:auto;padding:26px;display:none;border:1px solid rgba(var(--line-c),.5);background:rgba(4,11,24,.96);box-shadow:var(--shadow)}
+    body.day #schBox{background:rgba(252,254,255,.98)}
+    #schBox.on{display:block}
+    .m-d{color:var(--cyan);font-family:Arial,sans-serif;font-size:10px;font-weight:900;letter-spacing:.18em;margin-bottom:14px}
+    .m-part{padding:13px 14px;border:1px solid var(--line);background:rgba(var(--line-c),.06);margin-bottom:8px}
+    .m-part .pt{color:var(--cyan-dim);font-family:Arial,sans-serif;font-size:10px;font-weight:900;letter-spacing:.14em}
+    .m-part .pn{margin-top:5px;color:var(--text);font-size:14.5px;font-weight:800}
+    .m-desc{padding:12px 14px;border:1px solid var(--line);color:var(--tx2);font-size:13px;line-height:1.75;white-space:pre-wrap;margin-bottom:8px}
+    @media (max-width:820px){
+      .cell{min-height:62px;padding:4px 3px 5px}
+      .ev{font-size:8px;padding:2px 4px}
+      .dt{font-size:10px}
+      .up{gap:10px;padding:11px 12px}
+      .up .d{flex-basis:70px;font-size:11px}
+    }
+  </style>
+</head>
+<body class="sg">
+<script>try{if(localStorage.getItem('yaom-mode')==='day')document.body.classList.add('day');}catch(e){}</script>
+
+<div class="sg-grid" aria-hidden="true"></div>
+<div class="sg-diag" aria-hidden="true"></div>
+
+<header class="sg-header">
+  <a class="wordmark" href="../"><b>야옴</b><span>YAOM</span></a>
+  <nav class="sg-nav">
+    <a href="../">MAIN</a>
+    <a href="../profile/">PROFILE</a>
+    <a href="../schedule/" class="act">SCHEDULE</a>
+    <a href="../song/">SETLIST</a>
+    <a href="../notice/">NOTICE</a>
+    <a href="../dress/">WARDROBE</a>
+  </nav>
+  <div class="sg-right">
+    <button class="sg-hbtn" type="button" data-mode>☾ NIGHT</button>
+    <button class="sg-hbtn hi" type="button" data-ask>✉ SIGNAL</button>
+  </div>
+</header>
+<nav class="sg-subnav">
+  <a href="../">MAIN</a>
+  <a href="../profile/">PROFILE</a>
+  <a href="../schedule/" class="act">SCHEDULE</a>
+  <a href="../song/">SETLIST</a>
+  <a href="../notice/">NOTICE</a>
+  <a href="../dress/">WARDROBE</a>
+</nav>
+
+<main class="sg-main">
+  <section class="sg-hero">
+    <p class="sg-sig"><i></i>NO.03 <em>/ BROADCAST TIMETABLE</em></p>
+    <h1>ON AIR<span>SCHEDULE</span></h1>
+    <p class="kr">야옴이 밤에 켜지는 시간표예요. 기본 편성은 <b id="airLine">월–토 / 저녁 8시</b>,
+      갑작스러운 휴방·추가 방송은 달력에 바로 반영돼요.</p>
+    <div class="sg-ghost" aria-hidden="true">03</div>
+  </section>
+
+  <div class="card rv">
+    <p class="kick">FILE 01 <em>월간 편성표</em></p>
+    <div class="cal-head">
+      <button class="cal-nav" onclick="changeMonth(-1)" aria-label="이전 달">‹</button>
+      <span class="cal-title" id="calTitle"></span>
+      <button class="cal-nav" onclick="changeMonth(1)" aria-label="다음 달">›</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <p class="hint" style="margin-top:12px">✦ 표시가 있는 날은 하이라이트 방송이에요. 날짜를 누르면 상세가 열려요.</p>
+  </div>
+
+  <p class="sec-t">UPCOMING <em>다가오는 신호</em></p>
+  <div class="card rv">
+    <p class="kick">FILE 02 <em>예정된 방송</em></p>
+    <div id="upBox"><div class="spinner"></div></div>
+  </div>
+</main>
+
+<footer class="sg-footer">
+  <p>© 2026 야옴 YAOM Official.<br><b>비즈니스 문의</b> — 상단 ✉ SIGNAL 버튼을 이용해 주세요</p>
+  <div class="sg-moo"><span>아무래도 아무래도 · 아무래도 아무래도 · 아무래도 아무래도 · </span></div>
+</footer>
+
+<div id="schMask" onclick="closeSch()"></div>
+<div id="schBox"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../supabase.js"></script>
+<script>
+let curY, curM, all = [];
+const DOW = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+const KR  = ['일','월','화','수','목','금','토'];
+function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function isOff(t){ return t === '휴방'; }
+function cc(s){ return 'c-' + (s.color || (isOff(s.type) ? 'pink' : 'green')); }
+
+async function init(){
+  const now = new Date(); curY = now.getFullYear(); curM = now.getMonth();
+  try{ all = await fetchAll('schedule', { order:'date', asc:true }); }catch(e){ all = []; }
+  try{
+    const p = await loadProfile();
+    if(typeof p['on-air-kr'] === 'string' && p['on-air-kr'].trim()) document.getElementById('airLine').textContent = p['on-air-kr'].trim();
+    else if(typeof p['on-air'] === 'string' && p['on-air'].trim()) document.getElementById('airLine').textContent = p['on-air'].trim();
+  }catch(e){}
+  renderCal(); renderUp();
+  document.body.classList.add('ready');
+  if(window.FX) FX.reveal();
+  try{ enableIframeAutoHeight(); }catch(e){}
+}
+function changeMonth(d){
+  curM += d;
+  if(curM > 11){ curM = 0; curY++; }
+  if(curM < 0){ curM = 11; curY--; }
+  renderCal();
+  try{ enableIframeAutoHeight(); }catch(e){}
+}
+function renderCal(){
+  document.getElementById('calTitle').innerHTML = `${curY}. ${String(curM+1).padStart(2,'0')}<em>${curY}년 ${curM+1}월</em>`;
+  const first = new Date(curY, curM, 1), last = new Date(curY, curM+1, 0);
+  const start = first.getDay(), today = new Date();
+  let html = DOW.map(d => `<div class="dow">${d}</div>`).join('');
+  const prevLast = new Date(curY, curM, 0).getDate();
+  for(let i = start-1; i >= 0; i--) html += `<div class="cell other"><span class="dt">${prevLast-i}</span></div>`;
+  for(let d = 1; d <= last.getDate(); d++){
+    const ds = `${curY}-${String(curM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = today.getFullYear() === curY && today.getMonth() === curM && today.getDate() === d;
+    const evs = all.filter(s => s.date === ds);
+    const hl = evs.some(e => e.highlight);
+    const evHtml = evs.map(e => {
+      const label = (e.time ? e.time + ' ' : '') + (e.title || (isOff(e.type) ? '휴방' : '방송'));
+      return `<div class="ev ${cc(e)}" title="${esc(label)}">${esc(label)}</div>`;
+    }).join('');
+    html += `<div class="cell${isToday ? ' today' : ''}${evs.length ? ' has' : ''}${hl ? ' hl' : ''}" ${evs.length ? `onclick="openSch('${ds}')"` : ''}><span class="dt">${d}</span>${evHtml}</div>`;
+  }
+  const total = start + last.getDate();
+  const rem = total % 7 === 0 ? 0 : 7 - (total % 7);
+  for(let i = 1; i <= rem; i++) html += `<div class="cell other"><span class="dt">${i}</span></div>`;
+  document.getElementById('calGrid').innerHTML = html;
+}
+function renderUp(){
+  const today = new Date().toISOString().split('T')[0];
+  const up = all.filter(s => s.date >= today).slice(0, 12);
+  const el = document.getElementById('upBox');
+  if(!up.length){
+    el.innerHTML = '<div class="empty"><span class="ic">✦</span>예정된 송출 신호가 없어요<br>편성이 잡히면 여기에 먼저 떠요</div>';
+    return;
+  }
+  el.innerHTML = up.map(s => {
+    const dd = new Date(s.date + 'T00:00:00');
+    const off = isOff(s.type);
+    const times = [s.time, s.time2].filter(Boolean).join(' · ');
+    return `<div class="up ${cc(s)}" onclick="openSch('${s.date}')">
+      <div class="d">${String(dd.getMonth()+1).padStart(2,'0')}.${String(dd.getDate()).padStart(2,'0')} ${KR[dd.getDay()]}</div>
+      <div class="i"><div class="t">${esc(s.title || (off ? '휴방' : '방송'))}</div>${times ? `<div class="s">${esc(times)}</div>` : ''}</div>
+      <span class="b">${off ? 'OFF' : 'ON AIR'}</span>
+    </div>`;
+  }).join('');
+}
+function openSch(ds){
+  const evs = all.filter(s => s.date === ds);
+  if(!evs.length) return;
+  const dd = new Date(ds + 'T00:00:00');
+  let html = `<div class="m-d">${ds.replace(/-/g,'.')} · ${KR[dd.getDay()]}요일</div>`;
+  evs.forEach(function(s){
+    const off = isOff(s.type);
+    html += `<div class="m-part"><div class="pt">${s.time ? esc(s.time) : '1부'} · ${off ? 'OFF' : 'ON AIR'}</div><div class="pn">${esc(s.title || (off ? '휴방' : '방송'))}</div></div>`;
+    if(s.title2 || s.time2) html += `<div class="m-part"><div class="pt">${s.time2 ? esc(s.time2) : '2부'}</div><div class="pn">${esc(s.title2 || '방송')}</div></div>`;
+    if(s.description) html += `<div class="m-desc">${esc(s.description)}</div>`;
+  });
+  html += `<div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" onclick="closeSch()">CLOSE</button></div>`;
+  document.getElementById('schBox').innerHTML = html;
+  document.getElementById('schMask').classList.add('on');
+  document.getElementById('schBox').classList.add('on');
+}
+function closeSch(){
+  document.getElementById('schMask').classList.remove('on');
+  document.getElementById('schBox').classList.remove('on');
+}
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeSch(); });
+init();
+</script>
+<script src="../fx.js"></script>
+</body>
+</html>
