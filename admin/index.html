@@ -77,7 +77,8 @@
   </nav>
   <div class="sg-right">
     <button class="sg-hbtn" type="button" data-mode>☾ NIGHT</button>
-    <a class="sg-hbtn hi" href="../">사이트 보기 ↗</a>
+    <a class="sg-hbtn" href="../">사이트 보기</a>
+    <button class="sg-hbtn hi" type="button" onclick="logout()">로그아웃</button>
   </div>
 </header>
 <nav class="sg-subnav" id="adminSubnav">
@@ -91,10 +92,11 @@
 
 <div class="login" id="login">
   <div class="box">
-    <div class="t">✦ YAOM CONTROL</div>
-    <h2>관리자 인증</h2>
-    <input class="input" type="password" id="pw" placeholder="비밀번호" style="text-align:center" onkeydown="if(event.key==='Enter')tryLogin()">
-    <div class="row-end" style="justify-content:center;margin-top:10px"><button class="btn hi" onclick="tryLogin()">ENTER ↗</button></div>
+    <div class="t">YAOM CONTROL</div>
+    <h2>관리자 로그인</h2>
+    <input class="input" type="email" id="em" placeholder="이메일" autocomplete="username" style="margin-bottom:8px" onkeydown="if(event.key==='Enter')tryLogin()">
+    <input class="input" type="password" id="pw" placeholder="비밀번호" autocomplete="current-password" onkeydown="if(event.key==='Enter')tryLogin()">
+    <div class="row-end" style="justify-content:center;margin-top:10px"><button class="btn hi" id="loginBtn" onclick="tryLogin()">로그인</button></div>
     <div class="err" id="err"></div>
   </div>
 </div>
@@ -103,7 +105,7 @@
   <section class="sg-hero">
     <p class="sg-sig"><i></i>CONTROL <em>/ 관리자 페이지</em></p>
     <h1><b>야옴 관리자</b><span>ADMIN</span></h1>
-    <p class="kr">수정하고 <b>저장</b>을 누르면 사이트에 바로 반영돼요. 반영이 안 보이면 페이지에서 <b>Ctrl+Shift+R</b>.</p>
+    <p class="kr">수정 후 저장을 누르면 사이트에 반영된다. 반영이 안 보이면 페이지에서 Ctrl+Shift+R.</p>
   </section>
 
   <div class="tabs">
@@ -117,47 +119,47 @@
     <button class="tab-btn" onclick="switchTab('theme',this)">🎨 테마</button>
   </div>
 
-  <!-- ══════ 메인 탭 ══════ -->
+  <!-- 메인 -->
   <div class="tab-panel active" id="tab-main">
     <div class="card">
       <p class="card-title">🖼 프로필 사진</p>
       <div class="field">
         <span class="lbl">프사 이미지 링크 (URL) — 추천</span>
         <input class="input" id="f-avatar" type="url" placeholder="https://.../image.png" oninput="previewAvatar()">
-        <div class="hint">직접 이미지 주소(.png/.jpg/.gif)를 넣으면 <b>이 링크가 우선</b> 사용돼요. 정사각형(1:1) 이미지 권장.</div>
+        <div class="hint">SOOP 아이디보다 이 링크가 우선. 정사각형(1:1) 권장</div>
       </div>
       <div class="field">
         <span class="lbl">SOOP 아이디 (위 링크를 비우면 자동 연동)</span>
         <input class="input" id="f-soop-id" type="text" placeholder="yaom0728" oninput="previewAvatar()">
-        <div class="hint">방송국 주소 <code>sooplive.com/station/<b>yaom0728</b></code> 의 아이디 부분만 넣어주세요.</div>
+        <div class="hint">방송국 주소 <code>sooplive.com/station/<b>아이디</b></code> 의 아이디 부분만</div>
       </div>
       <div style="display:flex;align-items:center;gap:14px;margin-top:10px">
         <div style="width:64px;height:64px;flex:0 0 auto;border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;background:rgba(94,201,240,.08)">
           <img id="avPrev" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;display:none" onerror="this.style.display='none';document.getElementById('avPh').style.display='block'">
           <span id="avPh" style="color:var(--tx3)">✦</span>
         </div>
-        <span class="hint" style="margin:0">← 실제로 표시될 프사 미리보기</span>
-        <button class="btn hi" style="margin-left:auto" onclick="saveProfile()">저장 ✦</button>
+        <span class="hint" style="margin:0">실제 표시될 프사</span>
+        <button class="btn hi" style="margin-left:auto" onclick="saveProfile()">저장</button>
       </div>
     </div>
 
     <div class="card">
       <p class="card-title">✦ 메인 히어로 문구</p>
       <div class="form-grid">
-        <div class="field"><span class="lbl">상단 작은 영문 (KICKER)</span><input class="input" id="f-main-kicker" placeholder="NIGHT CREATOR"><div class="hint">메인 왼쪽 맨 위 시안색 작은 글씨. 영문 대문자 권장.</div></div>
-        <div class="field"><span class="lbl">이름 (한글)</span><input class="input" id="f-info-name" placeholder="야옴"><div class="hint">메인 큰 제목 · 프로필 이름에 함께 반영돼요.</div></div>
-        <div class="field"><span class="lbl">이름 (영문 · 아웃라인 글자)</span><input class="input" id="f-info-en" placeholder="YAOM"><div class="hint">메인의 거대한 테두리 글자예요. <b>4~6글자</b>가 가장 예뻐요.</div></div>
-        <div class="field"><span class="lbl">히어로 한 줄 태그라인</span><input class="input" id="f-main-tagline" placeholder="아무래도 아무래도 · GAME · TALK · SONG"><div class="hint">이름 아래 얇은 선 밑 문구. 짧게 유지해 주세요.</div></div>
-        <div class="field"><span class="lbl">ON AIR (영문 · 메인 우하단)</span><input class="input" id="f-on-air" placeholder="MON–SAT / 20:00"><div class="hint">메인 오른쪽 아래 큰 글씨 + 프로필 ON AIR 칸.</div></div>
-        <div class="field"><span class="lbl">ON AIR 아래 작은 글씨</span><input class="input" id="f-on-air-note" placeholder="SOOP LIVE CHANNEL"><div class="hint">뒤에 생일 D-Day가 자동으로 붙어요.</div></div>
-        <div class="field full"><span class="lbl">일정 페이지 안내 문장 (한글)</span><input class="input" id="f-on-air-kr" placeholder="월–토 / 저녁 8시"><div class="hint">SCHEDULE 페이지 설명에 들어가는 기본 편성 문구예요.</div></div>
+        <div class="field"><span class="lbl">상단 작은 영문 (KICKER)</span><input class="input" id="f-main-kicker" placeholder="NIGHT CREATOR"><div class="hint">메인 좌측 상단 작은 글씨. 영문 대문자</div></div>
+        <div class="field"><span class="lbl">이름 (한글)</span><input class="input" id="f-info-name" placeholder="야옴"><div class="hint">메인 제목과 프로필 이름에 함께 반영</div></div>
+        <div class="field"><span class="lbl">이름 (영문 · 아웃라인 글자)</span><input class="input" id="f-info-en" placeholder="YAOM"><div class="hint">메인 아웃라인 글자. 영문 4~6글자</div></div>
+        <div class="field"><span class="lbl">히어로 한 줄 태그라인</span><input class="input" id="f-main-tagline" placeholder="아무래도 아무래도 · GAME · TALK · SONG"><div class="hint">이름 아래 한 줄 문구</div></div>
+        <div class="field"><span class="lbl">ON AIR (영문 · 메인 우하단)</span><input class="input" id="f-on-air" placeholder="MON–SAT / 20:00"><div class="hint">메인 우측 하단과 프로필 ON AIR 칸에 반영</div></div>
+        <div class="field"><span class="lbl">ON AIR 아래 작은 글씨</span><input class="input" id="f-on-air-note" placeholder="SOOP LIVE CHANNEL"><div class="hint">뒤에 생일 D-Day 가 자동으로 붙는다</div></div>
+        <div class="field full"><span class="lbl">일정 페이지 안내 문장 (한글)</span><input class="input" id="f-on-air-kr" placeholder="월–토 / 저녁 8시"><div class="hint">SCHEDULE 페이지 설명 문구</div></div>
       </div>
-      <div class="row-end"><button class="btn hi" onclick="saveProfile()">저장 ✦</button></div>
+      <div class="row-end"><button class="btn hi" onclick="saveProfile()">저장</button></div>
     </div>
 
     <div class="card">
       <p class="card-title">📅 방송 요일</p>
-      <div class="hint" style="margin-bottom:12px">체크한 요일만 <b>ON AIR</b>로 표시되고, 체크 안 한 요일은 자동으로 <b>OFF(휴방)</b>가 돼요. (메인·프로필 동시 반영)</div>
+      <div class="hint" style="margin-bottom:12px">체크 = ON AIR, 해제 = OFF. 메인·프로필에 동시 반영 (값 0=월 ~ 6=일)</div>
       <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px">
         <label class="chk"><input type="checkbox" class="day-chk" value="0">월</label>
         <label class="chk"><input type="checkbox" class="day-chk" value="1">화</label>
@@ -168,7 +170,7 @@
         <label class="chk"><input type="checkbox" class="day-chk" value="6">일</label>
       </div>
       <input type="hidden" id="f-days">
-      <div class="row-end"><button class="btn hi" onclick="saveDays()">저장 ✦</button></div>
+      <div class="row-end"><button class="btn hi" onclick="saveDays()">저장</button></div>
     </div>
 
     <div class="card">
@@ -179,26 +181,26 @@
         <div class="field"><span class="lbl">팬카페</span><input class="input" id="f-link-cafe" type="url" placeholder="https://cafe.naver.com/vbbd"></div>
         <div class="field"><span class="lbl">X (트위터) — 비우면 버튼이 숨겨져요</span><input class="input" id="f-link-x" type="url" placeholder="https://x.com/..."></div>
       </div>
-      <div class="hint">메인 하단 소셜 줄 + 프로필 CHANNEL 카드에 함께 반영돼요.</div>
-      <div class="row-end"><button class="btn hi" onclick="saveProfile()">저장 ✦</button></div>
+      <div class="hint">메인 소셜 줄과 프로필 CHANNEL 카드에 반영</div>
+      <div class="row-end"><button class="btn hi" onclick="saveProfile()">저장</button></div>
     </div>
   </div>
 
-  <!-- ══════ 프로필 탭 ══════ -->
+  <!-- 프로필 -->
   <div class="tab-panel" id="tab-profile">
     <div class="card">
       <p class="card-title">📋 신원 기록 (FILE 01)</p>
       <div class="form-grid">
-        <div class="field"><span class="lbl">캐치프레이즈</span><input class="input" id="f-info-catchphrase" placeholder="아무래도 아무래도"><div class="hint">프로필 히어로에서 시안색 굵은 글씨로 떠요.</div></div>
-        <div class="field"><span class="lbl">데뷔일</span><input class="input" id="f-info-debut" placeholder="2024.02.10"><div class="hint">표시용 텍스트예요. (D+ 카운트는 fx.js 상단 <code>FX_DEBUT</code> 값 기준)</div></div>
-        <div class="field"><span class="lbl">생일 (MM.DD)</span><input class="input" id="f-info-birth" placeholder="07.28"><div class="hint"><b>D-Day가 자동 계산</b>돼요. <code>07.28</code> 처럼 두 자리로 넣어주세요.</div></div>
+        <div class="field"><span class="lbl">캐치프레이즈</span><input class="input" id="f-info-catchphrase" placeholder="아무래도 아무래도"><div class="hint">프로필 상단 강조 문구</div></div>
+        <div class="field"><span class="lbl">데뷔일</span><input class="input" id="f-info-debut" placeholder="2024.02.10"><div class="hint">표시용 텍스트. D+ 카운트는 fx.js 의 FX_DEBUT 기준</div></div>
+        <div class="field"><span class="lbl">생일 (MM.DD)</span><input class="input" id="f-info-birth" placeholder="07.28"><div class="hint">형식 MM.DD (예: 07.28). D-Day 자동 계산</div></div>
         <div class="field"><span class="lbl">성별</span><input class="input" id="f-info-gender" placeholder="여"></div>
         <div class="field"><span class="lbl">소속</span><input class="input" id="f-info-agency" placeholder="개인세"></div>
-        <div class="field"><span class="lbl">팬 애칭</span><input class="input" id="f-info-fandom" placeholder="꽁냥이"><div class="hint">프로필 히어로 FANDOM 칩에도 표시돼요.</div></div>
+        <div class="field"><span class="lbl">팬 애칭</span><input class="input" id="f-info-fandom" placeholder="꽁냥이"><div class="hint">프로필 상단 FANDOM 칩에도 표시</div></div>
         <div class="field"><span class="lbl">MBTI</span><input class="input" id="f-info-mbti" placeholder="미공개"></div>
-        <div class="field full"><span class="lbl">성격 키워드 (쉼표 구분)</span><input class="input" id="f-info-tags" placeholder="차분함, 밝음, 긍정적임, 친화력 만땅, 친절"><div class="hint">쉼표(,)로 나눠 적으면 각각 태그 박스로 그려져요.</div></div>
+        <div class="field full"><span class="lbl">성격 키워드 (쉼표 구분)</span><input class="input" id="f-info-tags" placeholder="차분함, 밝음, 긍정적임, 친화력 만땅, 친절"><div class="hint">쉼표(,)로 구분. 각각 태그 박스로 표시</div></div>
       </div>
-      <div class="row-end"><button class="btn hi" onclick="saveProfile()">저장 ✦</button></div>
+      <div class="row-end"><button class="btn hi" onclick="saveProfile()">저장</button></div>
     </div>
 
     <div class="card">
@@ -206,20 +208,20 @@
       <div class="form-grid">
         <div class="field"><span class="lbl">컨텐츠</span><input class="input" id="f-info-content" placeholder="게임 · 저챗 · 노래"></div>
         <div class="field"><span class="lbl">주력 게임</span><input class="input" id="f-info-game" placeholder="리그오브레전드 · 배틀그라운드"></div>
-        <div class="field"><span class="lbl">애창곡 (시그니처)</span><input class="input" id="f-info-song" placeholder="어른아이"><div class="hint">노래책 페이지 SIGNATURE 칸에도 같이 반영돼요.</div></div>
+        <div class="field"><span class="lbl">애창곡 (시그니처)</span><input class="input" id="f-info-song" placeholder="어른아이"><div class="hint">노래책 SIGNATURE 칸에 반영</div></div>
         <div class="field"><span class="lbl">선호 장르</span><input class="input" id="f-info-genre" placeholder="발라드"></div>
-        <div class="field"><span class="lbl">지양하는 장르</span><input class="input" id="f-info-avoid" placeholder="해외 노래"><div class="hint">노래책 AVOID 칸에 표시돼요.</div></div>
+        <div class="field"><span class="lbl">지양하는 장르</span><input class="input" id="f-info-avoid" placeholder="해외 노래"><div class="hint">노래책 AVOID 칸에 반영</div></div>
         <div class="field"><span class="lbl">모티프</span><input class="input" id="f-info-motif" placeholder="별 · 달 · 밤하늘"></div>
-        <div class="field full"><span class="lbl">지금 진행 중 (NOW · 비우면 칸이 숨겨져요)</span><textarea class="input" id="f-now" rows="3" placeholder="예: 팔로워 1000명 이벤트 진행 중!"></textarea><div class="hint">줄바꿈은 엔터 그대로 반영돼요.</div></div>
+        <div class="field full"><span class="lbl">지금 진행 중 (NOW · 비우면 칸이 숨겨져요)</span><textarea class="input" id="f-now" rows="3" placeholder="예: 팔로워 1000명 이벤트 진행 중!"></textarea><div class="hint">줄바꿈 그대로 반영. 비우면 칸이 숨겨짐</div></div>
       </div>
-      <div class="row-end"><button class="btn hi" onclick="saveProfile()">저장 ✦</button></div>
+      <div class="row-end"><button class="btn hi" onclick="saveProfile()">저장</button></div>
     </div>
 
     <div class="card">
       <p class="card-title">💬 한마디 · About</p>
-      <div class="field"><span class="lbl">한마디 (TRANSMISSION)</span><textarea class="input" id="f-quote" rows="3" placeholder="아무래도, 오늘 밤도 여기서 만나요."></textarea><div class="hint">프로필 가운데 큰 따옴표 문구예요.</div></div>
-      <div class="field"><span class="lbl">소개 (About)</span><textarea class="input" id="f-msg" rows="4" placeholder="차분하고 밝은 톤으로 게임 · 저챗 · 노래를 오가는 야옴이에요."></textarea><div class="hint">프로필 히어로 설명문에 들어가요. 2~3줄 권장.</div></div>
-      <div class="row-end"><button class="btn hi" onclick="saveProfile()">저장 ✦</button></div>
+      <div class="field"><span class="lbl">한마디 (TRANSMISSION)</span><textarea class="input" id="f-quote" rows="3" placeholder="아무래도, 오늘 밤도 여기서 만나요."></textarea><div class="hint">프로필 중앙 인용 문구</div></div>
+      <div class="field"><span class="lbl">소개 (About)</span><textarea class="input" id="f-msg" rows="4" placeholder="차분하고 밝은 톤으로 게임 · 저챗 · 노래를 오가는 야옴이에요."></textarea><div class="hint">프로필 상단 설명문. 2~3줄 권장</div></div>
+      <div class="row-end"><button class="btn hi" onclick="saveProfile()">저장</button></div>
     </div>
 
     <div class="card">
@@ -227,16 +229,16 @@
       <div class="field">
         <span class="lbl">능력치 목록</span>
         <textarea class="input" id="f-stats" rows="6" placeholder="친화력:95&#10;텐션:80&#10;노래:85&#10;게임:75&#10;차분함:90"></textarea>
-        <div class="hint"><b>규격</b> — 한 줄에 하나씩 <code>이름:숫자</code>. 숫자는 0~100. 비우면 기본 5개가 표시돼요.</div>
+        <div class="hint">한 줄에 하나씩 <code>이름:숫자</code>. 숫자 0~100. 비우면 기본값 표시</div>
       </div>
-      <div class="row-end"><button class="btn hi" onclick="saveProfile()">저장 ✦</button></div>
+      <div class="row-end"><button class="btn hi" onclick="saveProfile()">저장</button></div>
     </div>
 
     <div class="card">
       <p class="card-title">🩵 좋아함 · 싫어함 (FILE 04)</p>
-      <div class="field"><span class="lbl">좋아함</span><input class="input" id="f-like-list" placeholder="고양이, 소통, 회"><div class="hint">쉼표(,)로 구분. 번호가 자동으로 붙어요.</div></div>
+      <div class="field"><span class="lbl">좋아함</span><input class="input" id="f-like-list" placeholder="고양이, 소통, 회"><div class="hint">쉼표(,)로 구분. 번호는 자동</div></div>
       <div class="field"><span class="lbl">싫어함</span><input class="input" id="f-dislike-list" placeholder="다리 많은 벌레, 오이, 공포"><div class="hint">쉼표(,)로 구분.</div></div>
-      <div class="row-end"><button class="btn hi" onclick="saveProfile()">저장 ✦</button></div>
+      <div class="row-end"><button class="btn hi" onclick="saveProfile()">저장</button></div>
     </div>
 
     <div class="card">
@@ -248,10 +250,10 @@
         <div class="field full">
           <span class="lbl">목표 (마일스톤)</span>
           <textarea class="input" id="f-milestones" rows="5" placeholder="달성|첫 방송 2024.02.10&#10;진행 중|꽁냥이 팬카페 모으기&#10;준비 중|첫 커버곡 공개"></textarea>
-          <div class="hint"><b>규격</b> — 한 줄에 하나씩 <code>상태|내용</code>. 상태를 <code>달성</code>으로 쓰면 취소선이 그어져요.</div>
+          <div class="hint">한 줄에 하나씩 <code>상태|내용</code>. 상태가 <code>달성</code>이면 취소선</div>
         </div>
       </div>
-      <div class="row-end"><button class="btn hi" onclick="saveProfile()">저장 ✦</button></div>
+      <div class="row-end"><button class="btn hi" onclick="saveProfile()">저장</button></div>
     </div>
 
     <div class="card">
@@ -260,26 +262,25 @@
         <div class="field full"><span class="lbl">영상 제목 *</span><input class="input" id="os-title" placeholder="예: 어른아이 (커버)"></div>
         <div class="field"><span class="lbl">SOOP VOD ID *</span><input class="input" id="os-vod" placeholder="181755081"></div>
         <div class="field"><span class="lbl">썸네일 URL (선택)</span><input class="input" id="os-thumb" placeholder="https:// (비워도 됨)"></div>
-        <div class="field full"><div class="hint">💡 VOD 주소 <code>vod.sooplive.com/player/<b>181755081</b></code> 에서 <b>숫자만</b> 넣으면 프로필 ARCHIVE에 영상이 떠요.</div></div>
+        <div class="field full"><div class="hint">VOD 주소 <code>vod.sooplive.com/player/<b>숫자</b></code> 의 숫자만 입력. 프로필 ARCHIVE 에 표시</div></div>
       </div>
       <div class="row-end"><button class="btn hi" onclick="addVod()">+ 추가</button></div>
       <div id="os-list" style="margin-top:14px"></div>
     </div>
 
     <div class="card">
-      <p class="card-title">📖 사용법 · 규격 안내</p>
+      <p class="card-title">입력 규격</p>
       <div class="hint" style="line-height:2.1">
-        <b>· 프사</b> — SOOP 아이디만 넣으면 자동 연동. 직접 이미지 URL을 넣으면 그게 우선.<br>
-        <b>· 생일</b> — <code>MM.DD</code> (예: 07.28) → 메인·프로필 D-Day 자동 계산.<br>
-        <b>· 방송 요일</b> — 체크한 요일만 ON AIR, 나머지는 자동 OFF.<br>
-        <b>· 옷장 사진</b> — <b>세로 3:4 (900×1200 권장)</b>. SOOP 비공개 게시판에 올린 뒤 사진 <b>우클릭 → 이미지 주소 복사</b> (게시글 주소 ✗).<br>
-        <b>· 공지 이미지</b> — 같은 방법. 원본 글을 지우면 이미지가 깨져요.<br>
-        <b>· 저장 후 반영이 안 보이면</b> — 페이지에서 <code>Ctrl+Shift+R</code>.
+        프사 — SOOP 아이디 입력 시 자동 연동. 이미지 URL 입력 시 그쪽이 우선<br>
+        생일 — MM.DD 형식. 메인·프로필 D-Day 자동 계산<br>
+        방송 요일 — 체크 = ON AIR, 해제 = OFF (값 0=월 ~ 6=일)<br>
+        이미지 — 세로 3:4 (900x1200) 권장. SOOP 비공개 게시판 업로드 후 이미지 주소 복사. 원본 글을 지우면 링크가 끊긴다<br>
+        반영이 안 보이면 — 페이지에서 Ctrl+Shift+R
       </div>
     </div>
   </div>
 
-  <!-- ══════ 공지 탭 ══════ -->
+  <!-- 공지 -->
   <div class="tab-panel" id="tab-notice">
     <div class="card">
       <p class="card-title">📢 공지 추가</p>
@@ -288,7 +289,7 @@
       <div class="field">
         <span class="lbl">이미지 링크 (여러 개면 한 줄에 하나씩)</span>
         <textarea class="input" id="nt-img" rows="2" placeholder="https://stimg.sooplive.com/..."></textarea>
-        <div class="hint">💡 SOOP <b>비공개 게시판</b>에 이미지를 올린 뒤 → 이미지 <b>우클릭 → “이미지 주소 복사”</b> → 붙여넣기.</div>
+        <div class="hint">SOOP 비공개 게시판에 올린 뒤 이미지 우클릭 &gt; 이미지 주소 복사. 게시글 주소는 사용 불가</div>
       </div>
       <div class="field"><label class="chk"><input type="checkbox" id="nt-pin"> 📌 상단 고정 공지</label></div>
       <div class="row-end"><button class="btn hi" onclick="addNotice()">+ 추가</button></div>
@@ -302,7 +303,7 @@
     </div>
   </div>
 
-  <!-- ══════ 일정 탭 ══════ -->
+  <!-- 일정 -->
   <div class="tab-panel" id="tab-schedule">
     <div class="card">
       <p class="card-title">📅 일정 추가</p>
@@ -321,7 +322,7 @@
             <label><input type="radio" name="sccolor" value="red"><span class="cdot-red"></span></label>
             <label><input type="radio" name="sccolor" value="gray"><span class="cdot-gray"></span></label>
           </div>
-          <div class="hint">달력 칸에 표시되는 글자색이에요. 휴방은 보통 회색/핑크를 써요.</div>
+          <div class="hint">달력에 표시되는 글자색</div>
         </div>
         <div class="field"><span class="lbl">1부 시간</span><input class="input" id="sc-time" placeholder="저녁 8시"></div>
         <div class="field"><span class="lbl">1부 제목 (휴방이면 비워도 됨)</span><input class="input" id="sc-title" placeholder="저챗 + 게임"></div>
@@ -341,7 +342,7 @@
     </div>
   </div>
 
-  <!-- ══════ 노래 탭 ══════ -->
+  <!-- 노래 -->
   <div class="tab-panel" id="tab-song">
     <div class="card">
       <p class="card-title">🎵 노래 추가</p>
@@ -357,9 +358,9 @@
             <option value="POP">POP</option>
             <option value="기타">기타</option>
           </select>
-          <div class="hint">노래책 장르 탭과 같은 목록이에요. (바꾸려면 song/index.html 의 <code>GENRES</code> 도 함께 수정)</div>
+          <div class="hint">장르를 바꿀 땐 song/index.html 의 GENRES 도 같이 수정</div>
         </div>
-        <div class="field"><span class="lbl">난이도 (1~5)</span><input class="input" id="sg-diff" type="number" min="1" max="5" value="3"><div class="hint">노래책에서 점 개수로 표시돼요.</div></div>
+        <div class="field"><span class="lbl">난이도 (1~5)</span><input class="input" id="sg-diff" type="number" min="1" max="5" value="3"><div class="hint">노래책에서 점 개수로 표시</div></div>
       </div>
       <div class="row-end"><button class="btn hi" onclick="addSong()">+ 추가</button></div>
     </div>
@@ -377,13 +378,13 @@
         <div class="field"><span class="lbl">곡 제목</span><input class="input" id="ov-title" placeholder="어른아이"></div>
         <div class="field"><span class="lbl">아티스트</span><input class="input" id="ov-artist" placeholder="김민석"></div>
         <div class="field full"><label class="chk"><input type="checkbox" id="ov-vis"> 📺 OBS에 표시하기</label>
-          <div class="hint">체크하고 저장해야 오버레이에 바가 떠요. OBS 브라우저 소스 → <code>배포주소/overlay/</code> (700×120 권장).</div></div>
+          <div class="hint">체크 후 저장해야 오버레이에 표시. OBS 브라우저 소스 <code>배포주소/overlay/</code> · 700x120</div></div>
       </div>
-      <div class="row-end"><button class="btn hi" onclick="saveOverlay()">저장 ✦</button></div>
+      <div class="row-end"><button class="btn hi" onclick="saveOverlay()">저장</button></div>
     </div>
   </div>
 
-  <!-- ══════ 옷장 탭 ══════ -->
+  <!-- 옷장 -->
   <div class="tab-panel" id="tab-dress">
     <div class="card">
       <p class="card-title">👗 옷장 항목 추가</p>
@@ -395,9 +396,9 @@
         <div class="field full"><span class="lbl">이름 *</span><input class="input" id="dr-name" placeholder="예: 여름 야간 의상"></div>
         <div class="field full"><span class="lbl">설명 (선택)</span><input class="input" id="dr-desc" placeholder="짧은 설명"></div>
         <div class="field full"><span class="lbl">이미지 링크</span><input class="input" id="dr-img" type="url" placeholder="https://stimg.sooplive.com/...">
-          <div class="hint">권장 크기 <b>세로 3:4 (900×1200px)</b>. SOOP 비공개 게시판 업로드 → 이미지 <b>우클릭 → 이미지 주소 복사</b>.</div></div>
+          <div class="hint">세로 3:4 (900x1200) 권장. SOOP 비공개 게시판 업로드 후 이미지 주소 복사</div></div>
         <div class="field full"><label class="chk"><input type="checkbox" id="dr-new"> ✦ <b>새 옷(NEW LOOKS)</b>으로 올리기</label>
-          <div class="hint">체크하면 옷장 <b>NEW LOOKS</b> 포스터로, 체크 안 하면 <b>ARCHIVE</b> 그리드로 떠요. 나중에 목록에서 언제든 전환할 수 있어요.</div></div>
+          <div class="hint">체크 = NEW LOOKS 포스터, 해제 = ARCHIVE 그리드. 아래 목록에서 전환 가능</div></div>
       </div>
       <div class="row-end"><button class="btn hi" onclick="addDress()">+ 추가</button></div>
     </div>
@@ -407,42 +408,39 @@
     </div>
   </div>
 
-  <!-- ══════ 문의 탭 ══════ -->
+  <!-- 문의 -->
   <div class="tab-panel" id="tab-inquiry">
     <div class="card">
-      <p class="card-title">📬 받은 신호 (문의함)</p>
-      <div class="hint" style="margin-bottom:14px">사이트 상단 <b>✉ SIGNAL</b> 버튼으로 들어온 익명 문의예요.</div>
+      <p class="card-title">받은 문의</p>
+      <div class="hint" style="margin-bottom:14px">사이트 SIGNAL 버튼으로 들어온 문의</div>
       <div id="iq-list"><div class="spinner"></div></div>
     </div>
   </div>
 
-  <!-- ══════ 테마 탭 ══════ -->
+  <!-- 테마 -->
   <div class="tab-panel" id="tab-theme">
     <div class="card">
       <p class="card-title">🎨 색상 팔레트</p>
       <div class="hint" style="margin-bottom:14px">
-        여기서 바꾼 색은 <b>메인 · 프로필 · 일정 · 노래책 · 공지 · 옷장 전 페이지</b>에 한 번에 적용돼요.<br>
-        비워두고 저장하면 기본 NIGHT DIAGONAL 색으로 돌아갑니다.
+        전 페이지에 적용된다. 비우고 저장하면 기본값으로 돌아간다
       </div>
       <div class="palette">
-        <div class="pal"><input type="color" id="c-theme-main" oninput="syncColor('theme-main')"><label>액센트</label><input class="input" id="f-theme-main" placeholder="#22D9FF" oninput="syncHex('theme-main')"><div class="desc">네온 라인 · 강조 · 버튼</div></div>
+        <div class="pal"><input type="color" id="c-theme-main" oninput="syncColor('theme-main')"><label>액센트</label><input class="input" id="f-theme-main" placeholder="#22D9FF" oninput="syncHex('theme-main')"><div class="desc">네온 라인·강조·버튼</div></div>
         <div class="pal"><input type="color" id="c-theme-main-dark" oninput="syncColor('theme-main-dark')"><label>보조 액센트</label><input class="input" id="f-theme-main-dark" placeholder="#7FE4FF" oninput="syncHex('theme-main-dark')"><div class="desc">강조 텍스트 · 칩</div></div>
         <div class="pal"><input type="color" id="c-theme-main-deep" oninput="syncColor('theme-main-deep')"><label>진한 액센트</label><input class="input" id="f-theme-main-deep" placeholder="#0F8FB4" oninput="syncHex('theme-main-deep')"><div class="desc">게이지 그라데이션</div></div>
-        <div class="pal"><input type="color" id="c-theme-main-light" oninput="syncColor('theme-main-light')"><label>라인 색</label><input class="input" id="f-theme-main-light" placeholder="#2F5F7D" oninput="syncHex('theme-main-light')"><div class="desc">카드·표의 1px 테두리</div></div>
+        <div class="pal"><input type="color" id="c-theme-main-light" oninput="syncColor('theme-main-light')"><label>라인 색</label><input class="input" id="f-theme-main-light" placeholder="#2F5F7D" oninput="syncHex('theme-main-light')"><div class="desc">카드·표 1px 테두리</div></div>
         <div class="pal"><input type="color" id="c-theme-bg" oninput="syncColor('theme-bg')"><label>배경</label><input class="input" id="f-theme-bg" placeholder="#030815" oninput="syncHex('theme-bg')"><div class="desc">가장 어두운 바탕색</div></div>
-        <div class="pal"><input type="color" id="c-theme-logo" oninput="syncColor('theme-logo')"><label>로고 글자</label><input class="input" id="f-theme-logo" placeholder="#EDFAFF" oninput="syncHex('theme-logo')"><div class="desc">상단 “야옴” 로고</div></div>
+        <div class="pal"><input type="color" id="c-theme-logo" oninput="syncColor('theme-logo')"><label>로고 글자</label><input class="input" id="f-theme-logo" placeholder="#EDFAFF" oninput="syncHex('theme-logo')"><div class="desc">상단 로고 글자</div></div>
       </div>
       <div class="row-end" style="margin-top:14px">
         <button class="btn" onclick="resetPalette()">기본값으로</button>
-        <button class="btn hi" onclick="saveProfile()">저장 ✦</button>
+        <button class="btn hi" onclick="saveProfile()">저장</button>
       </div>
     </div>
     <div class="card">
-      <p class="card-title">💡 팔레트 안내</p>
+      <p class="card-title">팔레트 안내</p>
       <div class="hint" style="line-height:2.1">
-        색을 고르면 이 화면에서 <b>즉시 미리보기</b>가 되고, <b>저장 ✦</b>을 눌러야 사이트에 반영돼요.<br>
-        배경을 밝은 색으로 바꾸면 글자가 잘 안 보일 수 있어요 — 사이트 상단 <b>☾ NIGHT / ☀ DAY</b> 토글로 밝은 모드를 쓰는 걸 더 권장해요.<br>
-        <b>기본값으로</b> 버튼 → 시안(#22D9FF) 기본 팔레트로 되돌아가요.
+        색을 고르면 이 화면에서 바로 미리보기되고, 저장을 눌러야 사이트에 반영된다.<br>밝은 화면은 팔레트 대신 상단 NIGHT / DAY 토글을 사용.
       </div>
     </div>
   </div>
@@ -451,10 +449,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="../supabase.js"></script>
 <script>
-/* ⚠️ 배포 전에 반드시 바꿔주세요! (소스에 그대로 보입니다) */
-const ADMIN_PASSWORD = '171124';
+/* 계정은 Supabase > Authentication > Users 에서 발급. 코드에 비밀번호를 두지 않는다 */
 
-/* 페이지가 읽는 키 ↔ f-{키} 입력칸 1:1 (§2-B.1) */
+/* 이 배열 = admin f-{키} 입력칸 = 각 페이지 data-hook 키. 셋이 항상 같아야 함 */
 const profileKeys = [
   'avatar','soop-id',
   'info-name','info-en','info-catchphrase','info-debut','info-birth','info-gender','info-agency','info-fandom','info-mbti','info-tags',
@@ -468,20 +465,43 @@ const profileKeys = [
 
 function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-function tryLogin(){
-  if(document.getElementById('pw').value === ADMIN_PASSWORD){
-    document.getElementById('login').style.display = 'none';
-    document.body.classList.add('authed');
-    document.body.classList.add('ready');
-    runLoaders();
-  } else {
-    document.getElementById('err').textContent = '비밀번호가 맞지 않아요';
+async function tryLogin(){
+  const em = (document.getElementById('em').value || '').trim();
+  const pw = document.getElementById('pw').value || '';
+  const err = document.getElementById('err');
+  const btn = document.getElementById('loginBtn');
+  if(!em || !pw){ err.textContent = '이메일과 비밀번호를 입력하세요'; return; }
+  err.textContent = ''; btn.disabled = true;
+  try{
+    const r = await db.auth.signInWithPassword({ email: em, password: pw });
+    if(r.error){ err.textContent = '로그인 실패: ' + r.error.message; btn.disabled = false; return; }
+    enterAdmin();
+  }catch(e){
+    err.textContent = '서버에 연결할 수 없습니다';
+    btn.disabled = false;
   }
 }
+function enterAdmin(){
+  document.getElementById('login').style.display = 'none';
+  document.body.classList.add('authed');
+  document.body.classList.add('ready');
+  runLoaders();
+}
+async function logout(){
+  try{ await db.auth.signOut(); }catch(e){}
+  location.reload();
+}
+/* 세션이 남아 있으면 로그인 화면을 건너뜀 */
+(async function(){
+  try{
+    const { data } = await db.auth.getSession();
+    if(data && data.session) enterAdmin();
+  }catch(e){}
+})();
 /* 로더 일괄 실행 — DB 연결 실패해도 스피너가 영원히 돌지 않게 */
 function renderErr(id, cols){
   const el = document.getElementById(id); if(!el) return;
-  const msg = '⚠️ 데이터를 불러오지 못했어요 — <code>supabase.js</code>의 URL/키와 SQL 실행 여부를 확인해 주세요';
+  const msg = '데이터를 불러오지 못했습니다. 로그인 상태와 <code>supabase.js</code> 키, 보안정책.sql 실행 여부를 확인하세요';
   el.innerHTML = cols
     ? `<tr><td colspan="${cols}"><div class="hint" style="text-align:center;padding:20px">${msg}</div></td></tr>`
     : `<div class="hint" style="text-align:center;padding:20px">${msg}</div>`;
@@ -497,7 +517,7 @@ async function runLoaders(){
     try{ await fn(); }
     catch(e){ bad++; console.error(e); if(id) renderErr(id, cols); }
   }
-  if(bad) showToast('❌ DB 연결 실패 — supabase.js 키와 SQL 실행 여부를 확인해 주세요', 5000);
+  if(bad) showToast('데이터를 불러오지 못했습니다. supabase.js 키와 SQL 실행 여부를 확인하세요', 5000);
 }
 function switchTab(name, btn){
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -532,8 +552,8 @@ async function saveProfile(){
     if(el) saved[k] = el.value;
   });
   const { error } = await db.from('profile').upsert({ id: 1, data: saved });
-  if(error){ showToast('❌ 저장 실패: ' + error.message); return; }
-  showToast('✦ 저장됐어요!');
+  if(error){ showToast('저장 실패: ' + error.message); return; }
+  showToast('저장됨');
 }
 async function saveDays(){
   document.getElementById('f-days').value =
@@ -545,7 +565,7 @@ async function saveDays(){
 async function loadNotice(){
   const rows = await fetchAll('notice', { order:'created_at', asc:false });
   const t = document.getElementById('nt-list');
-  if(!rows.length){ t.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--tx3);padding:22px">등록된 공지가 없어요</td></tr>'; return; }
+  if(!rows.length){ t.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--tx3);padding:22px">등록된 공지 없음</td></tr>'; return; }
   t.innerHTML = rows.map(n => `<tr>
     <td>${esc(n.title)}</td>
     <td>${n.pinned ? '<span class="badge on">PIN</span>' : '-'}</td>
@@ -555,7 +575,7 @@ async function loadNotice(){
 }
 async function addNotice(){
   const title = document.getElementById('nt-title').value.trim();
-  if(!title){ showToast('❗ 제목은 필수예요'); return; }
+  if(!title){ showToast('제목을 입력하세요'); return; }
   const images = document.getElementById('nt-img').value.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
   const ok = await insertRow('notice', {
     title,
@@ -565,18 +585,18 @@ async function addNotice(){
     images
   });
   if(ok){
-    showToast('✦ 공지가 송출됐어요');
+    showToast('공지 추가됨');
     ['nt-title','nt-content','nt-img'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('nt-pin').checked = false;
     loadNotice();
-  } else showToast('❌ 추가 실패');
+  } else showToast('추가 실패');
 }
 
 /* ── 일정 ── */
 async function loadSchedule(){
   const rows = await fetchAll('schedule', { order:'date', asc:true });
   const t = document.getElementById('sc-list');
-  if(!rows.length){ t.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--tx3);padding:22px">등록된 일정이 없어요</td></tr>'; return; }
+  if(!rows.length){ t.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--tx3);padding:22px">등록된 일정 없음</td></tr>'; return; }
   t.innerHTML = rows.map(s => `<tr>
     <td>${esc(s.date)}</td>
     <td>${esc(s.time) || '-'}</td>
@@ -587,7 +607,7 @@ async function loadSchedule(){
 }
 async function addSchedule(){
   const date = document.getElementById('sc-date').value;
-  if(!date){ showToast('❗ 날짜는 필수예요'); return; }
+  if(!date){ showToast('날짜를 선택하세요'); return; }
   const type = document.getElementById('sc-type').value;
   let title = document.getElementById('sc-title').value.trim();
   if(!title) title = (type === '휴방' ? '휴방' : '방송');
@@ -601,11 +621,11 @@ async function addSchedule(){
     highlight: document.getElementById('sc-hl').checked
   });
   if(ok){
-    showToast('✦ 일정이 추가됐어요');
+    showToast('일정 추가됨');
     ['sc-date','sc-time','sc-title','sc-time2','sc-title2','sc-desc'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('sc-hl').checked = false;
     loadSchedule();
-  } else showToast('❌ 추가 실패');
+  } else showToast('추가 실패');
 }
 
 /* ── 노래 ── */
@@ -615,7 +635,7 @@ function renderSongs(){
   const q = (document.getElementById('sg-search').value || '').trim().toLowerCase();
   const list = songCache.filter(s => !q || String(s.title || '').toLowerCase().includes(q) || String(s.artist || '').toLowerCase().includes(q));
   const t = document.getElementById('sg-list');
-  if(!list.length){ t.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--tx3);padding:22px">등록된 노래가 없어요</td></tr>'; return; }
+  if(!list.length){ t.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--tx3);padding:22px">등록된 노래 없음</td></tr>'; return; }
   t.innerHTML = list.map(function(s){
     const d = parseInt(s.difficulty, 10) || 0;
     return `<tr>
@@ -629,7 +649,7 @@ function renderSongs(){
 }
 async function addSong(){
   const title = document.getElementById('sg-title').value.trim();
-  if(!title){ showToast('❗ 곡명은 필수예요'); return; }
+  if(!title){ showToast('곡명을 입력하세요'); return; }
   let diff = parseInt(document.getElementById('sg-diff').value, 10) || 3;
   diff = Math.max(1, Math.min(5, diff));
   const ok = await insertRow('songs', {
@@ -639,10 +659,10 @@ async function addSong(){
     difficulty: diff
   });
   if(ok){
-    showToast('✦ 선곡표에 추가됐어요');
+    showToast('노래 추가됨');
     document.getElementById('sg-title').value = ''; document.getElementById('sg-artist').value = '';
     loadSong();
-  } else showToast('❌ 추가 실패');
+  } else showToast('추가 실패');
 }
 
 /* ── 오버레이 (지금 트는 노래) ── */
@@ -663,15 +683,15 @@ async function saveOverlay(){
     is_visible: document.getElementById('ov-vis').checked,
     updated_at: new Date().toISOString()
   });
-  if(error){ showToast('❌ 저장 실패: ' + error.message); return; }
-  showToast('✦ 오버레이에 반영됐어요');
+  if(error){ showToast('저장 실패: ' + error.message); return; }
+  showToast('오버레이에 반영됨');
 }
 
 /* ── VOD ── */
 async function loadVod(){
   const rows = await fetchAll('original_songs', { order:'id', asc:false });
   const el = document.getElementById('os-list');
-  if(!rows.length){ el.innerHTML = '<div class="hint" style="text-align:center;padding:12px">등록된 영상이 없어요</div>'; return; }
+  if(!rows.length){ el.innerHTML = '<div class="hint" style="text-align:center;padding:12px">등록된 영상 없음</div>'; return; }
   el.innerHTML = rows.map(s => `<div class="mini">
     <span class="nm">${esc(s.title)}</span>
     <span class="badge">${esc(s.vod_id)}</span>
@@ -681,13 +701,13 @@ async function loadVod(){
 async function addVod(){
   const title = document.getElementById('os-title').value.trim();
   const vod = document.getElementById('os-vod').value.trim();
-  if(!title || !vod){ showToast('❗ 제목과 VOD ID가 필요해요'); return; }
+  if(!title || !vod){ showToast('제목과 VOD ID 를 입력하세요'); return; }
   const ok = await insertRow('original_songs', { title, vod_id: vod, thumbnail: document.getElementById('os-thumb').value.trim() });
   if(ok){
-    showToast('✦ 아카이브에 추가됐어요');
+    showToast('VOD 추가됨');
     ['os-title','os-vod','os-thumb'].forEach(id => document.getElementById(id).value = '');
     loadVod();
-  } else showToast('❌ 추가 실패');
+  } else showToast('추가 실패');
 }
 
 /* ── 옷장 ── */
@@ -708,7 +728,7 @@ async function loadDress(){
   const fbtn = (k,l) => `<button class="btn${dressFilter === k ? ' hi' : ''}" style="padding:8px 13px" onclick="setDressFilter('${k}')">${l}</button>`;
   let html = `<div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px">
     ${fbtn('all','전체 ' + dressCache.length)}${fbtn('new','✦ 새 옷 ' + newCnt)}${fbtn('old','◻ 기존 ' + (dressCache.length - newCnt))}</div>`;
-  if(!dressCache.length){ el.innerHTML = html + '<div class="hint" style="text-align:center;padding:16px">등록된 항목이 없어요</div>'; return; }
+  if(!dressCache.length){ el.innerHTML = html + '<div class="hint" style="text-align:center;padding:16px">등록된 항목 없음</div>'; return; }
   const match = d => dressFilter === 'all' ? true : (dressFilter === 'new' ? hasNew(d) : !hasNew(d));
   const row = (d,i,len) => `<div class="mini">
       <div style="display:flex;flex-direction:column;gap:3px">
@@ -744,7 +764,7 @@ async function toggleDressNew(id){
     ? (d.badges || []).filter(function(b){ const l = (b && (b.label != null ? b.label : b)) || ''; return String(l).trim().toUpperCase() !== 'NEW'; })
     : (Array.isArray(d.badges) ? d.badges : []).concat([{ label:'NEW' }]);
   await updateRow('dress_items', id, { badges });
-  showToast(had ? '◻ ARCHIVE로 옮겼어요' : '✦ NEW LOOKS로 옮겼어요');
+  showToast(had ? 'ARCHIVE 로 이동' : 'NEW LOOKS 로 이동');
   loadDress();
 }
 async function moveDress(id, dir){
@@ -755,12 +775,12 @@ async function moveDress(id, dir){
   if(j < 0 || j >= arr.length) return;
   const tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
   await Promise.all(arr.map((d, idx) => updateRow('dress_items', d.id, { sort_order: idx })));
-  showToast('↕ 순서를 바꿨어요');
+  showToast('순서 변경됨');
   loadDress();
 }
 async function addDress(){
   const name = document.getElementById('dr-name').value.trim();
-  if(!name){ showToast('❗ 이름은 필수예요'); return; }
+  if(!name){ showToast('이름을 입력하세요'); return; }
   const cat = document.getElementById('dr-cat').value;
   const orderRaw = (document.getElementById('dr-order').value || '').trim();
   let sort_order;
@@ -777,18 +797,18 @@ async function addDress(){
     sort_order
   });
   if(ok){
-    showToast('✦ 옷장에 추가됐어요');
+    showToast('옷장 항목 추가됨');
     ['dr-name','dr-desc','dr-img','dr-order'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('dr-new').checked = false;
     loadDress();
-  } else showToast('❌ 추가 실패 (SQL 실행 여부 확인)');
+  } else showToast('추가 실패. 로그인 상태와 보안정책.sql 실행 여부를 확인하세요');
 }
 
 /* ── 문의 ── */
 async function loadInquiry(){
   const rows = await fetchAll('inquiries', { order:'created_at', asc:false });
   const el = document.getElementById('iq-list');
-  if(!rows.length){ el.innerHTML = '<div class="hint" style="text-align:center;padding:22px">아직 받은 신호가 없어요</div>'; return; }
+  if(!rows.length){ el.innerHTML = '<div class="hint" style="text-align:center;padding:22px">받은 문의 없음</div>'; return; }
   el.innerHTML = rows.map(q => `<div class="inq">
     <div class="h"><b>${esc(q.nickname) || '익명'}</b><span>${String(q.created_at || '').slice(0,16).replace('T',' ')}</span></div>
     <div class="m">${esc(q.message)}</div>
@@ -798,9 +818,9 @@ async function loadInquiry(){
 
 /* ── 공통 삭제 ── */
 async function del(table, id, fn){
-  if(!confirm('정말 삭제할까요?')) return;
+  if(!confirm('삭제하시겠습니까?')) return;
   const ok = await deleteRow(table, id);
-  if(ok){ showToast('🗑 삭제됐어요'); fn(); } else showToast('❌ 삭제 실패');
+  if(ok){ showToast('삭제됨'); fn(); } else showToast('삭제 실패');
 }
 
 /* ── 🎨 팔레트 ── */
@@ -833,7 +853,7 @@ function resetPalette(){
     if(c) c.value = PAL_DEFAULT[k];
     document.documentElement.style.removeProperty(PAL_MAP[k]);
   });
-  showToast('기본값으로 되돌렸어요 — 저장해야 사이트에 반영돼요');
+  showToast('기본값으로 되돌림. 저장해야 사이트에 반영된다');
 }
 function syncPalettePickers(){
   Object.keys(PAL_DEFAULT).forEach(function(k){

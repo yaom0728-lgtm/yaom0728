@@ -1,11 +1,5 @@
-/* ============================================================
-   야옴 YAOM — fx.js (NIGHT DIAGONAL 공통 연출·동작)
-   별밭 · 클릭 ✦ 팝 · 페이지 전환(TUNING…) · SEND SIGNAL 문의 모달 ·
-   D-Day · 스크롤 리빌 · FOUC 게이트 · DAY/NIGHT 모드 · 라이트박스
-   ⚠ supabase.js 뒤에 로드할 것 (문의 전송에 insertRow 사용)
-   ── 새 사람에게 옮길 때 교체 지점 ──
-   FX_BIRTH(생일 MM-DD) / FX_DEBUT(데뷔 YYYY-MM-DD) / FX_MARK(입자 모양)
-   ============================================================ */
+/* 로드 순서: supabase.js -> 페이지 스크립트 -> fx.js (문의 전송에 insertRow 사용)
+   다른 사람에게 옮길 때 아래 세 줄만 교체 */
 var FX_BIRTH = '07-28';
 var FX_DEBUT = '2024-02-10';
 var FX_MARK  = '✦';
@@ -16,7 +10,7 @@ var FX_MARK  = '✦';
   var FX = window.FX = {};
   var noMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---------- DAY / NIGHT 모드 ---------- */
+  /* 모드 상태는 localStorage('yaom-mode'). 첫 페인트 전 복원은 각 페이지 인라인 스크립트가 담당 */
   function syncMode(){
     var day = document.body.classList.contains('day');
     $$('[data-mode]').forEach(function(b){ b.textContent = day ? '☀ DAY' : '☾ NIGHT'; });
@@ -31,7 +25,7 @@ var FX_MARK  = '✦';
   });
   syncMode();
 
-  /* ---------- 공통 레이어 자동 주입 ---------- */
+  /* 별밭·전환커버·문의 모달·라이트박스를 페이지마다 주입. data-noask 가 있으면 문의 모달 제외 */
   function el(tag, id, html){
     var n = document.getElementById(id);
     if(n) return n;
@@ -45,22 +39,21 @@ var FX_MARK  = '✦';
   el('div','sgFx');
   var cover = el('div','sgCover','<div class="in"><i></i>TUNING…</div>');
 
-  /* 문의(SEND SIGNAL) 모달 — admin 제외 전 페이지 */
   if(!document.body.hasAttribute('data-noask')){
     el('div','askMask');
     el('div','askBox',
       '<div class="frm">'+
         '<div class="sk"><i></i>SEND SIGNAL</div>'+
         '<h3>야옴에게 신호 보내기</h3>'+
-        '<p class="sub">하고 싶은 말·문의를 남겨주세요. 익명으로 야옴에게만 전달돼요.</p>'+
+        '<p class="sub">남긴 내용은 관리자만 확인합니다</p>'+
         '<textarea class="input" id="askTa" placeholder="보내고 싶은 말을 적어주세요…"></textarea>'+
         '<div class="row"><button class="btn" id="askNo">CANCEL</button><button class="btn hi" id="askGo">TRANSMIT ↗</button></div>'+
       '</div>'+
-      '<div class="done"><div class="st">✦</div><b>신호 전송 완료</b><span>잘 받았어요 — 고마워요, 꽁냥이!</span></div>');
+      '<div class="done"><div class="st">✦</div><b>전송 완료</b><span>남겨주셔서 감사합니다</span></div>');
     el('div','lbox','<button class="x" onclick="FX.closeLb()">CLOSE ✕</button><div class="in"><img id="lbImg" alt=""><div class="cap" id="lbCap"></div></div>');
   }
 
-  /* ---------- 별밭 ---------- */
+  /* 별밭 */
   if(stars && !stars.childNodes.length && !noMotion){
     for(var i=0;i<34;i++){
       var st = document.createElement('i');
@@ -74,7 +67,7 @@ var FX_MARK  = '✦';
     }
   }
 
-  /* ---------- 클릭 ✦ 팝 ---------- */
+  /* 클릭 ✦ 팝 */
   function pop(x,y,n){
     var fx = document.getElementById('sgFx');
     if(!fx || noMotion) return;
@@ -94,7 +87,7 @@ var FX_MARK  = '✦';
     pop(e.clientX, e.clientY, 1);
   });
 
-  /* ---------- 페이지 전환 커버 ---------- */
+  /* 페이지 전환 커버 */
   document.addEventListener('click', function(e){
     var a = e.target.closest('a[href]');
     if(!a || noMotion) return;
@@ -127,7 +120,7 @@ var FX_MARK  = '✦';
   };
   FX.paintDday();
 
-  /* ---------- SEND SIGNAL 모달 ---------- */
+  /* SEND SIGNAL 모달 */
   var mask = document.getElementById('askMask'), box = document.getElementById('askBox');
   FX.openAsk = function(){
     if(!box) return;
@@ -143,19 +136,19 @@ var FX_MARK  = '✦';
     var go = document.getElementById('askGo');
     if(go) go.addEventListener('click', function(){
       var t = document.getElementById('askTa'), v = (t && t.value || '').trim();
-      if(!v){ alert('내용을 입력해 주세요!'); return; }
-      if(typeof insertRow !== 'function'){ alert('아직 서버 연결 전이에요 — Supabase 키 입력 후 전송돼요.'); return; }
+      if(!v){ alert('내용을 입력하세요'); return; }
+      if(typeof insertRow !== 'function'){ alert('서버에 연결할 수 없습니다'); return; }
       go.disabled = true;
       insertRow('inquiries', { message: v }).then(function(ok){
         go.disabled = false;
         if(ok){ box.classList.add('ok'); setTimeout(FX.closeAsk, 1600); }
-        else alert('전송에 실패했어요. 잠시 후 다시 시도해 주세요.');
+        else alert('전송에 실패했습니다');
       });
     });
     document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ FX.closeAsk(); FX.closeLb(); } });
   }
 
-  /* ---------- 라이트박스 ---------- */
+  /* 라이트박스 */
   FX.openLb = function(src, name, desc){
     var b = document.getElementById('lbox'); if(!b || !src) return;
     document.getElementById('lbImg').src = src;
@@ -167,7 +160,7 @@ var FX_MARK  = '✦';
   var lb = document.getElementById('lbox');
   if(lb) lb.addEventListener('click', function(e){ if(e.target === lb) FX.closeLb(); });
 
-  /* ---------- 스크롤 리빌 ---------- */
+  /* 스크롤 리빌 */
   FX.reveal = function(){
     var rvs = $$('.rv');
     if('IntersectionObserver' in window){
@@ -179,7 +172,7 @@ var FX_MARK  = '✦';
   };
   FX.reveal();
 
-  /* ---------- FOUC 게이트 ---------- */
+  /* body.ready 가 붙어야 본문이 보인다. 로딩 실패해도 1.6초 뒤 강제 표시 */
   FX.ready = function(){
     document.body.classList.add('ready');
     $$('.rv').forEach(function(e){

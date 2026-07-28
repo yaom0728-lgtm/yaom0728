@@ -67,8 +67,7 @@
   <section class="sg-hero">
     <p class="sg-sig"><i></i>NO.05 <em>/ CHANNEL BROADCAST</em></p>
     <h1><b>공지</b><span>NOTICE</span></h1>
-    <p class="kr">야옴 채널에서 나가는 안내예요. 이벤트 · 휴방 · 규칙 변경처럼
-      꼭 알아야 하는 소식은 여기에서 먼저 송출돼요.</p>
+    <p class="kr">이벤트·휴방·규칙 변경 등 공지 사항.</p>
     <div class="sg-ghost" aria-hidden="true">05</div>
   </section>
 
@@ -79,7 +78,7 @@
 </main>
 
 <footer class="sg-footer">
-  <p>© 2026 야옴 YAOM Official.<br><b>비즈니스 문의</b> — 상단 ✉ SIGNAL 버튼을 이용해 주세요</p>
+  <p>© 2026 야옴 YAOM Official.<br><b>비즈니스 문의</b> — 상단 SIGNAL 버튼</p>
   <div class="sg-moo"><span>아무래도 아무래도 · 아무래도 아무래도 · 아무래도 아무래도 · </span></div>
 </footer>
 
@@ -99,7 +98,7 @@ async function init(){
   const el = document.getElementById('list');
   document.getElementById('cnt').textContent = `· TOTAL ${all.length}`;
   if(!all.length){
-    el.innerHTML = '<div class="empty"><span class="ic">✦</span>아직 송출된 공지가 없어요<br>새 소식이 생기면 여기에서 가장 먼저 알려드릴게요</div>';
+    el.innerHTML = '<div class="empty"><span class="ic">✦</span>등록된 공지 없음</div>';
   }else{
     el.innerHTML = all.map(function(n, i){
       const d = new Date(n.created_at);

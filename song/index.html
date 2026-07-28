@@ -69,8 +69,7 @@
   <section class="sg-hero">
     <p class="sg-sig"><i></i>NO.04 <em>/ NIGHT SETLIST</em></p>
     <h1><b>노래책</b><span>SETLIST</span></h1>
-    <p class="kr">야옴이 부를 수 있는 곡 목록이에요. 검색하거나 장르로 걸러서 찾아보고,
-      듣고 싶은 곡은 방송에서 편하게 신청해 주세요.</p>
+    <p class="kr">야옴이 부를 수 있는 곡 목록. 곡명·아티스트 검색과 장르 필터를 지원한다.</p>
     <div class="sg-ghost" aria-hidden="true">04</div>
   </section>
 
@@ -81,7 +80,7 @@
       <div class="s"><div class="k">FAVORITE GENRE</div><div class="v" data-hook="info-genre">발라드</div></div>
       <div class="s"><div class="k">AVOID</div><div class="v" data-hook="info-avoid">해외 노래</div></div>
     </div>
-    <p class="hint" style="margin-top:14px">🎧 부른 곡 다시보기는 <a href="../profile/" style="color:var(--cyan-dim);font-weight:800">PROFILE ▸ ARCHIVE ↗</a> 에 모여 있어요.</p>
+    <p class="hint" style="margin-top:14px">부른 곡 다시보기는 <a href="../profile/" style="color:var(--cyan-dim);font-weight:800">PROFILE &gt; ARCHIVE</a> 에 있다</p>
   </div>
 
   <p class="sec-t">TRACK LIST <em>전체 목록</em></p>
@@ -103,7 +102,7 @@
 </main>
 
 <footer class="sg-footer">
-  <p>© 2026 야옴 YAOM Official.<br><b>비즈니스 문의</b> — 상단 ✉ SIGNAL 버튼을 이용해 주세요</p>
+  <p>© 2026 야옴 YAOM Official.<br><b>비즈니스 문의</b> — 상단 SIGNAL 버튼</p>
   <div class="sg-moo"><span>아무래도 아무래도 · 아무래도 아무래도 · 아무래도 아무래도 · </span></div>
 </footer>
 
@@ -151,7 +150,7 @@ function render(){
   document.getElementById('cnt').textContent = `TOTAL ${list.length} SONGS · PAGE ${curP} / ${total}`;
   const tb = document.getElementById('tb');
   if(!list.length){
-    tb.innerHTML = '<tr><td colspan="5"><div class="empty"><span class="ic">✦</span>선곡표에 등록된 곡이 없어요<br>찾는 곡이 없다면 SIGNAL로 알려주세요</div></td></tr>';
+    tb.innerHTML = '<tr><td colspan="5"><div class="empty"><span class="ic">✦</span>등록된 곡 없음</div></td></tr>';
     document.getElementById('pager').innerHTML = '';
     return;
   }

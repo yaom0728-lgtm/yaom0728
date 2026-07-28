@@ -90,8 +90,7 @@
   <section class="sg-hero">
     <p class="sg-sig"><i></i>NO.06 <em>/ NIGHT WARDROBE</em></p>
     <h1><b>옷장</b><span>WARDROBE</span></h1>
-    <p class="kr">야옴이 밤마다 갈아입는 기록이에요. 새로 공개된 착장은 <b>NEW LOOKS</b> 포스터로,
-      그동안 모인 것들은 <b>ARCHIVE</b>에서 볼 수 있어요.</p>
+    <p class="kr">새로 공개된 착장은 <b>NEW LOOKS</b>, 이전 착장은 <b>ARCHIVE</b> 에 있다.</p>
     <div class="sg-ghost" aria-hidden="true">06</div>
   </section>
 
@@ -107,7 +106,7 @@
 </main>
 
 <footer class="sg-footer">
-  <p>© 2026 야옴 YAOM Official.<br><b>비즈니스 문의</b> — 상단 ✉ SIGNAL 버튼을 이용해 주세요</p>
+  <p>© 2026 야옴 YAOM Official.<br><b>비즈니스 문의</b> — 상단 SIGNAL 버튼</p>
   <div class="sg-moo"><span>아무래도 아무래도 · 아무래도 아무래도 · 아무래도 아무래도 · </span></div>
 </footer>
 
@@ -205,8 +204,8 @@ function render(){
   const list = view();
   if(!list.length){
     body.innerHTML = curMode === 'new'
-      ? `<div class="empty"><span class="ic">✦</span>${esc(LABELS[curCat] || '')} 새 착장이 아직 없어요<br><span style="opacity:.8;font-size:12px">관리자에서 “✨ 새 옷으로 올리기”를 체크하면 여기 포스터로 떠요</span></div>`
-      : `<div class="empty"><span class="ic">◻</span>${esc(LABELS[curCat] || '')} 기록이 아직 없어요</div>`;
+      ? `<div class="empty"><span class="ic">✦</span>${esc(LABELS[curCat] || '')} 새 착장 없음</div>`
+      : `<div class="empty"><span class="ic">◻</span>${esc(LABELS[curCat] || '')} 기록 없음</div>`;
     return;
   }
   const total = Math.max(1, Math.ceil(list.length / PER));

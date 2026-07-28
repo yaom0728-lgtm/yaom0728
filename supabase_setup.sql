@@ -1,22 +1,21 @@
 -- =============================================================
--- YAOM OFFICIAL — Supabase 전체 셋업 SQL
--- 사용법: Supabase → SQL Editor → 이 파일 전체 붙여넣기 → Run
--- ✅ 여러 번 다시 실행해도 안전 (IF NOT EXISTS / ON CONFLICT DO NOTHING)
--- ✅ 이미 저장한 admin 내용은 다시 실행해도 지워지지 않습니다
--- ✅ 이미지는 전부 "링크" 방식이라 Storage(버킷) 설정이 필요 없습니다
+-- YAOM OFFICIAL — 표 생성 + 기본 데이터
+-- 실행 순서: ① Authentication > Users 에서 관리자 계정 생성
+--            ② 이 파일 실행
+--            ③ 보안정책.sql 실행  (이걸 실행해야 읽기/쓰기 권한이 열린다)
+-- 여러 번 다시 실행해도 저장된 데이터는 지워지지 않는다.
+-- 이미지는 전부 링크 방식이라 Storage 설정이 필요 없다.
 -- =============================================================
 
--- ── 프로필 (id=1 한 칸에 JSON) ──
+-- profile: id=1 한 행의 JSON 한 칸에 모든 프로필 값이 들어간다
 CREATE TABLE IF NOT EXISTS profile (
   id         BIGINT PRIMARY KEY,
   data       JSONB NOT NULL DEFAULT '{}'::jsonb,
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE profile ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "profile_all" ON profile;
-CREATE POLICY "profile_all" ON profile FOR ALL USING (true) WITH CHECK (true);
 
--- ── 공지 ──
+-- notice
 CREATE TABLE IF NOT EXISTS notice (
   id         BIGSERIAL PRIMARY KEY,
   title      TEXT NOT NULL,
@@ -29,10 +28,8 @@ CREATE TABLE IF NOT EXISTS notice (
 ALTER TABLE notice ADD COLUMN IF NOT EXISTS image_url TEXT;
 ALTER TABLE notice ADD COLUMN IF NOT EXISTS images JSONB DEFAULT '[]'::jsonb;
 ALTER TABLE notice ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "notice_all" ON notice;
-CREATE POLICY "notice_all" ON notice FOR ALL USING (true) WITH CHECK (true);
 
--- ── 일정 (달력) ──
+-- schedule
 CREATE TABLE IF NOT EXISTS schedule (
   id          BIGSERIAL PRIMARY KEY,
   title       TEXT NOT NULL,
@@ -55,10 +52,8 @@ ALTER TABLE schedule ADD COLUMN IF NOT EXISTS title2      TEXT;
 ALTER TABLE schedule ADD COLUMN IF NOT EXISTS type2       TEXT;
 ALTER TABLE schedule ADD COLUMN IF NOT EXISTS description TEXT;
 ALTER TABLE schedule ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "schedule_all" ON schedule;
-CREATE POLICY "schedule_all" ON schedule FOR ALL USING (true) WITH CHECK (true);
 
--- ── 노래책: 커버곡 ──
+-- songs
 CREATE TABLE IF NOT EXISTS songs (
   id         BIGSERIAL PRIMARY KEY,
   title      TEXT NOT NULL,
@@ -69,10 +64,8 @@ CREATE TABLE IF NOT EXISTS songs (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE songs ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "songs_all" ON songs;
-CREATE POLICY "songs_all" ON songs FOR ALL USING (true) WITH CHECK (true);
 
--- ── 노래책: 다시보기(SOOP VOD) ──
+-- original_songs (SOOP VOD)
 CREATE TABLE IF NOT EXISTS original_songs (
   id         BIGSERIAL PRIMARY KEY,
   title      TEXT NOT NULL,
@@ -81,10 +74,8 @@ CREATE TABLE IF NOT EXISTS original_songs (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE original_songs ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "original_songs_all" ON original_songs;
-CREATE POLICY "original_songs_all" ON original_songs FOR ALL USING (true) WITH CHECK (true);
 
--- ── 옷장 (헤어 / 의상 / 렌즈) ──
+-- dress_items (분류 값 hair/outfit/lens 는 dress/index.html CATS, admin select, admin DRESS_CATS 와 같아야 함)
 CREATE TABLE IF NOT EXISTS public.dress_items (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   category    TEXT NOT NULL DEFAULT 'hair',
@@ -100,10 +91,8 @@ CREATE TABLE IF NOT EXISTS public.dress_items (
 );
 CREATE INDEX IF NOT EXISTS idx_dress_items_category ON public.dress_items(category);
 ALTER TABLE public.dress_items ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "dress_all" ON public.dress_items;
-CREATE POLICY "dress_all" ON public.dress_items FOR ALL USING (true) WITH CHECK (true);
 
--- ── 문의함 (SEND SIGNAL) ──
+-- inquiries
 CREATE TABLE IF NOT EXISTS inquiries (
   id         BIGSERIAL PRIMARY KEY,
   nickname   TEXT,
@@ -111,10 +100,8 @@ CREATE TABLE IF NOT EXISTS inquiries (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE inquiries ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "inquiries_all" ON inquiries;
-CREATE POLICY "inquiries_all" ON inquiries FOR ALL USING (true) WITH CHECK (true);
 
--- ── OBS 오버레이 "지금 트는 노래" 상태 1행 ──
+-- overlay_state: 항상 id=1 한 행만 사용
 CREATE TABLE IF NOT EXISTS public.overlay_state (
   id          INT PRIMARY KEY DEFAULT 1 CHECK (id = 1),
   song_title  TEXT DEFAULT '',
@@ -124,17 +111,11 @@ CREATE TABLE IF NOT EXISTS public.overlay_state (
 );
 INSERT INTO public.overlay_state (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
 ALTER TABLE public.overlay_state ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "overlay_all" ON public.overlay_state;
-CREATE POLICY "overlay_all" ON public.overlay_state FOR ALL USING (true) WITH CHECK (true);
 
 
--- =============================================================
--- 야옴 기본 프로필 데이터 (새 프로젝트일 때만 들어감)
--- ⚠️ 이미 profile(id=1)이 있으면 DO NOTHING — 저장해둔 내용은 안전합니다.
---    다른 사람 데이터가 남아 있는 프로젝트를 재사용한다면
---    아래 DELETE 줄의 '--' 를 지우고 한 번 실행한 뒤 다시 Run 하세요.
+-- 기본 프로필 데이터 (profile 행이 없을 때만 입력됨)
+-- 다른 사람 데이터가 남은 프로젝트를 재사용한다면 아래 DELETE 주석을 풀고 한 번 실행한 뒤 다시 Run
 -- DELETE FROM profile WHERE id = 1;
--- =============================================================
 INSERT INTO profile (id, data) VALUES (1, '{
   "avatar": "",
   "soop-id": "yaom0728",
@@ -178,9 +159,7 @@ INSERT INTO profile (id, data) VALUES (1, '{
   "theme-main-light": "", "theme-bg": "", "theme-logo": ""
 }'::jsonb) ON CONFLICT (id) DO NOTHING;
 
--- 시그니처 곡 VOD 1건 (없을 때만)
+-- 시그니처 곡 VOD (없을 때만)
 INSERT INTO original_songs (title, vod_id)
 SELECT '어른아이', '181755081'
 WHERE NOT EXISTS (SELECT 1 FROM original_songs WHERE vod_id = '181755081');
-
--- 끝! 이미지는 전부 "링크" 방식이라 Storage 설정이 필요 없습니다.

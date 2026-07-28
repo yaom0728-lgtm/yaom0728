@@ -99,8 +99,7 @@
   <section class="sg-hero">
     <p class="sg-sig"><i></i>NO.03 <em>/ BROADCAST TIMETABLE</em></p>
     <h1><b>방송 일정</b><span>SCHEDULE</span></h1>
-    <p class="kr">야옴이 밤에 켜지는 시간표예요. 기본 편성은 <b id="airLine">월–토 / 저녁 8시</b>,
-      갑작스러운 휴방·추가 방송은 달력에 바로 반영돼요.</p>
+    <p class="kr">기본 편성은 <b id="airLine">월–토 / 저녁 8시</b>. 휴방과 추가 방송은 달력에 반영된다.</p>
     <div class="sg-ghost" aria-hidden="true">03</div>
   </section>
 
@@ -112,7 +111,7 @@
       <button class="cal-nav" onclick="changeMonth(1)" aria-label="다음 달">›</button>
     </div>
     <div class="cal-grid" id="calGrid"></div>
-    <p class="hint" style="margin-top:12px">✦ 표시가 있는 날은 하이라이트 방송이에요. 날짜를 누르면 상세가 열려요.</p>
+    <p class="hint" style="margin-top:12px">날짜를 누르면 상세가 열린다</p>
   </div>
 
   <p class="sec-t">UPCOMING <em>다가오는 신호</em></p>
@@ -123,7 +122,7 @@
 </main>
 
 <footer class="sg-footer">
-  <p>© 2026 야옴 YAOM Official.<br><b>비즈니스 문의</b> — 상단 ✉ SIGNAL 버튼을 이용해 주세요</p>
+  <p>© 2026 야옴 YAOM Official.<br><b>비즈니스 문의</b> — 상단 SIGNAL 버튼</p>
   <div class="sg-moo"><span>아무래도 아무래도 · 아무래도 아무래도 · 아무래도 아무래도 · </span></div>
 </footer>
 
@@ -188,7 +187,7 @@ function renderUp(){
   const up = all.filter(s => s.date >= today).slice(0, 12);
   const el = document.getElementById('upBox');
   if(!up.length){
-    el.innerHTML = '<div class="empty"><span class="ic">✦</span>예정된 송출 신호가 없어요<br>편성이 잡히면 여기에 먼저 떠요</div>';
+    el.innerHTML = '<div class="empty"><span class="ic">✦</span>예정된 방송 없음</div>';
     return;
   }
   el.innerHTML = up.map(s => {

@@ -224,7 +224,7 @@
   <p class="sec-t">TIMETABLE <em>주간 편성</em></p>
   <div class="card rv" style="padding:26px 18px">
     <div class="week" id="weekBox"></div>
-    <p class="hint" style="margin-top:16px;text-align:center">정확한 날짜별 일정은 <a href="../schedule/" style="color:var(--cyan-dim);font-weight:800">SCHEDULE ↗</a> 에서 확인해 주세요.</p>
+    <p class="hint" style="margin-top:16px;text-align:center">날짜별 일정은 <a href="../schedule/" style="color:var(--cyan-dim);font-weight:800">SCHEDULE</a> 에서 확인</p>
   </div>
 
   <!-- 아카이브 -->
@@ -249,7 +249,7 @@
 </main>
 
 <footer class="sg-footer">
-  <p>© 2026 야옴 YAOM Official.<br><b>비즈니스 문의</b> — 상단 ✉ SIGNAL 버튼을 이용해 주세요</p>
+  <p>© 2026 야옴 YAOM Official.<br><b>비즈니스 문의</b> — 상단 SIGNAL 버튼</p>
   <div class="sg-moo"><span>아무래도 아무래도 · 아무래도 아무래도 · 아무래도 아무래도 · </span></div>
 </footer>
 
@@ -276,7 +276,7 @@ function renderTags(v){
 function renderList(id, v, fallback){
   const arr = toList(v).length ? toList(v) : (fallback || []);
   const box = document.getElementById(id);
-  if(!arr.length){ box.innerHTML = '<div class="empty" style="padding:14px 0;text-align:left">아직 등록된 항목이 없어요</div>'; return; }
+  if(!arr.length){ box.innerHTML = '<div class="empty" style="padding:14px 0;text-align:left">등록된 항목 없음</div>'; return; }
   box.innerHTML = arr.map((t,i) => `<div class="it"><i>${String(i+1).padStart(2,'0')}</i><span>${esc(t)}</span></div>`).join('');
 }
 function renderStats(v){
@@ -316,7 +316,7 @@ async function renderVod(){
   let rows = [];
   try{ rows = await fetchAll('original_songs', { order:'id', asc:false }); }catch(e){}
   if(!rows.length){
-    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><span class="ic">✦</span>아직 아카이브된 영상이 없어요<br>관리자 페이지에서 VOD ID를 넣으면 여기에 떠요</div>';
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><span class="ic">✦</span>등록된 영상 없음</div>';
     return;
   }
   grid.innerHTML = rows.map(r => `
