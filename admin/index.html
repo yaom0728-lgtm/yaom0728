@@ -501,7 +501,7 @@ async function logout(){
 /* 로더 일괄 실행 — DB 연결 실패해도 스피너가 영원히 돌지 않게 */
 function renderErr(id, cols){
   const el = document.getElementById(id); if(!el) return;
-  const msg = '데이터를 불러오지 못했습니다. 로그인 상태와 <code>supabase.js</code> 키, 보안정책.sql 실행 여부를 확인하세요';
+  const msg = '데이터를 불러오지 못했습니다. 로그인 상태와 <code>supabase.js</code> 키, security_policy.sql 실행 여부를 확인하세요';
   el.innerHTML = cols
     ? `<tr><td colspan="${cols}"><div class="hint" style="text-align:center;padding:20px">${msg}</div></td></tr>`
     : `<div class="hint" style="text-align:center;padding:20px">${msg}</div>`;
@@ -801,7 +801,7 @@ async function addDress(){
     ['dr-name','dr-desc','dr-img','dr-order'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('dr-new').checked = false;
     loadDress();
-  } else showToast('추가 실패. 로그인 상태와 보안정책.sql 실행 여부를 확인하세요');
+  } else showToast('추가 실패. 로그인 상태와 security_policy.sql 실행 여부를 확인하세요');
 }
 
 /* ── 문의 ── */

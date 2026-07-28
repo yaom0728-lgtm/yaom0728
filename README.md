@@ -12,7 +12,7 @@ style.css             전 페이지 공통 스타일
 fx.js                 공통 동작 (별밭·페이지 전환·문의 모달·D-Day)
 supabase.js           DB 연결 + 공통 함수
 supabase_setup.sql    표 생성 + 기본 데이터
-보안정책.sql           RLS 권한 설정
+security_policy.sql           RLS 권한 설정
 assets/               배경 이미지
 profile/ schedule/ song/ notice/ dress/   공개 페이지
 admin/                관리자 (Supabase Auth 로그인)
@@ -36,7 +36,7 @@ Supabase → Authentication → Users → Add user
 SQL Editor 에 `supabase_setup.sql` 전체 붙여넣고 Run
 
 ### ③ 권한 설정
-SQL Editor 에 `보안정책.sql` 전체 붙여넣고 Run
+SQL Editor 에 `security_policy.sql` 전체 붙여넣고 Run
 - 읽기는 공개, 쓰기는 로그인한 관리자만
 - 문의(`inquiries`)는 보내기만 공개, **읽기는 관리자 전용**
 - 이 파일을 실행해야 사이트가 데이터를 읽을 수 있다
